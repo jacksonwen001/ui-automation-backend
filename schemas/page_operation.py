@@ -1,10 +1,31 @@
+from ast import List
+import datetime
 from pydantic import BaseModel
 
 
 class QueryPageOperationRequest: 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, page_id: str, current: int = 1, size: int = 10) -> None:
+        self.page_id = page_id
+        self.current = current
+        self.size = size
+
+class QueryPageOperationResponse(BaseModel): 
+    id: str
+    project_id: str
+    page_id: str
+    name: str
+    created_at: datetime.datetime
+
+class QueryPageOperationsResponse(BaseModel):
+    total: int 
+    operations: List[QueryPageOperationResponse]
 
 
-class CreatePageOperationRequest(BaseModel): pass
-class UpdatePageOperationRequest(BaseModel): pass
+
+class CreatePageOperationRequest(BaseModel): 
+    project_id: str
+    page_id: str
+    name: str
+
+class UpdatePageOperationRequest(BaseModel): 
+    name: str

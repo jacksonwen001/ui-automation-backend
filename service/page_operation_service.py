@@ -1,10 +1,47 @@
+from fastapi import HTTPException
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
+from models.page_operation import PageOperation
 
-from schemas.page_operation import CreatePageOperationRequest, QueryPageOperationRequest, UpdatePageOperationRequest
+from schemas.page_operation import CreatePageOperationRequest, QueryPageOperationRequest, QueryPageOperationResponse, QueryPageOperationsResponse, UpdatePageOperationRequest
 
+def query(db: Session, request: QueryPageOperationRequest) -> QueryPageOperationsResponse: 
+    operation_query = db.query(PageOperation).filter(PageOperation.page_id == request.page_id)
+    count = operation_query.count()
+    operations = operation_query.limit(request.size).offset((request.current - 1 ) * request.size).order_by(desc(PageOperation.created_at)).all()
+    response = QueryPageOperationsResponse(total=count, steps=[QueryPageOperationResponse(
+        id = operation.id, 
+        project_id= operation.project_id, 
+        page_id = operation.page_id, 
+        name = operation.name, 
+        created_at = operation.created_at
+    ) for operation in operations])
+    return response
 
-def query(db: Session, request: QueryPageOperationRequest): pass
-def get(db: Session, page_operation_id: str): pass
-def delete(db: Session, page_operation_id: str): pass
-def update(db: Session, page_operation_id: str, reqeust: UpdatePageOperationRequest): pass
-def create(db: Session, requst: CreatePageOperationRequest): pass
+def get(db: Session, page_operation_id: str) -> QueryPageOperationResponse: 
+    operation = db.query(PageOperation).filter(PageOperation.id == page_operation_id).first()
+    if not operation: raise HTTPException(status_code=404, detail="operation not found.id={}".format(page_operation_id))
+
+    return QueryPageOperationResponse(
+        id = operation.id, 
+        project_id= operation.project_id, 
+        page_id = operation.page_id, 
+        name = operation.name, 
+    )
+
+def delete(db: Session, page_operation_id: str): 
+    operation = get(db, page_operation_id=page_operation_id)
+    db.delete(operation)
+    db.commit()
+
+def update(db: Session, page_operation_id: str, reqeust: UpdatePageOperationRequest): 
+    operation = get(db=db, page_operation_id=page_operation_id)
+    operation.name = reqeust.name
+    db.commit()
+    db.refresh()
+
+def create(db: Session, request: CreatePageOperationRequest): 
+    operation = PageOperation(project_id = request.project_id, page_id = request.page_id, name = request.name)
+    db.add(operation)
+    db.commit()
+    db.refresh(operation)
