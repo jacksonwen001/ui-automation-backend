@@ -4,24 +4,24 @@ from sqlalchemy.orm import Session
 
 from models.page import Page
 from models.scenario_page import ScenarioPage
-from schemas.scenario import QueryScenarioResponse
-from schemas.scenario_page import CreateScenarioPageRequest, QueryScenarioPageResponse, UpdateScenarioPageOrderRequest
+from schemas.scenario_page import CreateScenarioPageRequest, QueryScenarioPageResponse, QueryScenarioPagesResponse, UpdateScenarioPageOrderRequest
 
 def query(db: Session, scenario_id: str): 
     scenario_pages = db \
-        .query(ScenarioPage.id, ScenarioPage.order_no, Page.name)\
-        .outerjoin(Page, ScenarioPage.page_id == Page.id)\
+        .query(ScenarioPage.id, ScenarioPage.order_no,ScenarioPage.page_id, Page.name)\
+        .outerjoin(Page, ScenarioPage.page_id == Page.id) \
         .filter(ScenarioPage.scenario_id == scenario_id).order_by(asc(ScenarioPage.order_no)).all()
     return scenario_pages
 
-def query_for_display(db: Session, scenario_id: str):
+def display(db: Session, scenario_id: str) -> QueryScenarioPagesResponse:
     scenario_pages = query(db, scenario_id)
-    return QueryScenarioResponse(
+    return QueryScenarioPagesResponse(
         pages = [QueryScenarioPageResponse(
-          id = page.id, 
-          order_no = page.order_no, 
-          name = page.name
-        ) for page in scenario_pages]
+          id = scenario_page.id, 
+          page_id = scenario_page.page_id, 
+          order_no = scenario_page.order_no, 
+          name = scenario_page.name
+        ) for scenario_page in scenario_pages]
     )
     
 def get(db: Session, scenario_page_id: str) -> ScenarioPage: 

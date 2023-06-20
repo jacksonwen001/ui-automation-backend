@@ -12,10 +12,11 @@ class CreateScenarioPageRequest(BaseModel):
 class UpdateScenarioPageOrderRequest(BaseModel): 
     pages: Dict[str, int]
 
-class ScenarioPageResponse(BaseModel):
+class QueryScenarioPageResponse(BaseModel):
     id: str
+    page_id: str
     order_no: int 
     name: str
 
-class QueryScenarioPageResponse(BaseModel):
-    pages: List[ScenarioPageResponse]
+class QueryScenarioPagesResponse(BaseModel):
+    pages: List[QueryScenarioPageResponse]

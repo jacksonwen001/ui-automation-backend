@@ -10,7 +10,7 @@ router = APIRouter(tags=['steps'], prefix='/page/operation/steps')
 
 @router.get('')
 async def query(*, db: Session=Depends(get_db), reqeust: Annotated[QueryPageStepRequest, Depends()]) -> QueryPageStepsResponse: 
-    return page_step_service.queryForDisplay(db, reqeust)
+    return page_step_service.display(db, reqeust)
 
 @router.put('/{step_id}')
 async def update(*, db:Session=Depends(get_db), step_id: str, request: UpdatePageStepRequest): 

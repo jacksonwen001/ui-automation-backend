@@ -1,4 +1,5 @@
 from pydantic import BaseModel
 
-class CreateScenarioOperationRequest(BaseModel): pass
+class CreateScenarioOperationRequest(BaseModel): 
+    pass
 

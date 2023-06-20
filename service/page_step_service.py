@@ -16,7 +16,7 @@ def query(db: Session, request: QueryPageStepRequest):
     
     return steps
 
-def queryForDisplay(db:Session, request: QueryPageStepRequest) -> QueryPageStepsResponse:
+def display(db:Session, request: QueryPageStepRequest) -> QueryPageStepsResponse:
     steps = query(db=db, request=request)
     print("steps:{}".format(steps))
     print("total: {}".format(len(steps)))
