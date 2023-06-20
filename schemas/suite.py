@@ -1,4 +1,5 @@
 import datetime
+from typing import List
 from pydantic import BaseModel
 
 
@@ -12,6 +13,10 @@ class QuerySuiteResponse(BaseModel):
     id: str
     name: str
     created_at: datetime.datetime
+
+class QuerySuitesResponse(BaseModel): 
+    total: int 
+    suites: List[QuerySuiteResponse]
 
 
 class QuerySuiteRequest:

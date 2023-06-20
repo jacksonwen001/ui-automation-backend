@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
-from models.page_element import PageElement
 
+from models.page_element import PageElement
 from schemas.page_element import CreateElementRequest, QueryElementRequest, QueryElementResponse, QueryElementsResponse, UpdateElementRequest
 
 def query(db: Session, request: QueryElementRequest): 

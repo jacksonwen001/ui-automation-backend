@@ -7,15 +7,19 @@ from schemas.page_operation import CreatePageOperationRequest, QueryPageOperatio
 
 def query(db: Session, request: QueryPageOperationRequest) -> QueryPageOperationsResponse: 
     operation_query = db.query(PageOperation).filter(PageOperation.page_id == request.page_id)
-    count = operation_query.count()
-    operations = operation_query.limit(request.size).offset((request.current - 1 ) * request.size).order_by(desc(PageOperation.created_at)).all()
-    response = QueryPageOperationsResponse(total=count, steps=[QueryPageOperationResponse(
+
+    total = operation_query.count()
+    operations = operation_query.order_by(desc(PageOperation.created_at)) \
+        .limit(request.size).offset((request.current - 1 ) * request.size).all()
+    
+    response = QueryPageOperationsResponse(total=total, operations=[QueryPageOperationResponse(
         id = operation.id, 
         project_id= operation.project_id, 
         page_id = operation.page_id, 
         name = operation.name, 
         created_at = operation.created_at
     ) for operation in operations])
+
     return response
 
 def get(db: Session, page_operation_id: str) -> QueryPageOperationResponse: 

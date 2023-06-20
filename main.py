@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 from config.celery_utils import create_celery
-from routers import page, page_element, page_operation, page_step, project, scenario, scenario_operation, suite, task, universities, user
+from routers import page, page_element, page_operation, page_step, project, scenario, scenario_operation, scenario_page, suite, task, universities, user
 from sql_app import models
 from sql_app.database import engine
 
@@ -24,6 +24,7 @@ app.include_router(page_element.router)
 app.include_router(page_operation.router)
 app.include_router(page_step.router)
 app.include_router(scenario.router)
+app.include_router(scenario_page.router)
 app.include_router(scenario_operation.router)
 app.include_router(suite.router)
 app.include_router(task.router)

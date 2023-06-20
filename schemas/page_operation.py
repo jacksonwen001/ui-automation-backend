@@ -1,5 +1,5 @@
-from ast import List
 import datetime
+from typing import List
 from pydantic import BaseModel
 
 
@@ -19,8 +19,6 @@ class QueryPageOperationResponse(BaseModel):
 class QueryPageOperationsResponse(BaseModel):
     total: int 
     operations: List[QueryPageOperationResponse]
-
-
 
 class CreatePageOperationRequest(BaseModel): 
     project_id: str
