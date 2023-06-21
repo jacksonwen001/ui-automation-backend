@@ -3,12 +3,13 @@ from sqlalchemy.orm import Session
 
 from routers import get_db
 from schemas.scenario_operation import CreateScenarioOperationRequest
-
+from service import scenario_operation_service
 
 router = APIRouter(tags=['scenario_operations'], prefix='/scenario/page/operations')
 
-@router.post('')
-async def create(*, db:Session=Depends(get_db), request:CreateScenarioOperationRequest): pass
+@router.post('', status_code=201, description="add operation into scenario page")
+async def create(*, db:Session=Depends(get_db), request:CreateScenarioOperationRequest): 
+    scenario_operation_service.create()
 
 @router.get('')
 async def query(*, db:Session=Depends(get_db)): pass
