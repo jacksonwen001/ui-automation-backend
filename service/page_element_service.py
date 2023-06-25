@@ -3,17 +3,19 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from models.page_element import PageElement
+from models.page_step import PageStep
 from schemas.page_element import CreateElementRequest, QueryElementRequest, QueryElementResponse, QueryElementsResponse, UpdateElementRequest
 
 def query(db: Session, request: QueryElementRequest): 
-    element_query = db.query(PageElement).filter(PageElement.page_id == request.page_id)
+    element_query = db.query(PageElement, count(PageStep)).outerjoin(PageStep, PageElement.id == PageStep.element_id).filter(PageElement.page_id == request.page_id)
     count = element_query.count()
     elements = element_query.limit(request.size).offset((request.current - 1) * request.size).order_by(desc(PageElement.created_at)).all()
     return QueryElementsResponse(total = count, elements=[QueryElementResponse(
         id = element.id, 
         name = element.name, 
         selecotr = element.selector, 
-        target = element.target
+        target = element.target,
+        usage = element.count
     ) for element in elements])
 
 def get(db: Session, page_element_id: str): 
@@ -44,4 +46,4 @@ def create(db: Session, requst: CreateElementRequest):
     element = PageElement(name = requst.name, selector = requst.selector, target = requst.target)
     db.add(element)
     db.commit()
-    db.refresh()
+

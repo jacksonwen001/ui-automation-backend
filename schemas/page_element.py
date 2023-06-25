@@ -25,6 +25,7 @@ class QueryElementResponse(BaseModel):
     name: str
     selector: str
     target: str
+    usage: int
 
 class QueryElementsResponse(BaseModel):
     total: int
