@@ -15,12 +15,12 @@ class QueryProjectRequest:
         self.current = current
         self.size = size
 
-class QueryProjectResponse(BaseModel):
+class ProjectResponse(BaseModel):
     id: str
     name: str
     created_at: datetime.datetime
 
 class QueryProjectsResponse(BaseModel):
     total: int
-    projects: List[QueryProjectResponse] 
+    projects: List[ProjectResponse] 
 

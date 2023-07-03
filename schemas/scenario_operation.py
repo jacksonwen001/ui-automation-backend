@@ -1,4 +1,4 @@
-from ast import Dict, List
+from typing import Dict, List
 from pydantic import BaseModel
 
 class CreateScenarioOperationRequest(BaseModel): 
@@ -22,6 +22,6 @@ class QueryScenarioOperationsResponse(BaseModel):
     operations: List[ScenarioOperationResponse]
 
 class QueryScenarioOperationRequest:
-    def __init__(self, page_id: str) -> None:
-        self.page_id = page_id 
+    def __init__(self, scenario_page_id: str) -> None:
+        self.scenario_page_id = scenario_page_id 
     

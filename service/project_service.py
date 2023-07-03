@@ -1,9 +1,10 @@
 from typing import List
+import uuid
 from fastapi import HTTPException
 from models.project import Project
 from sqlalchemy.orm import Session
 
-from schemas.project import QueryProjectResponse, QueryProjectsResponse
+from schemas.project import CreateProjectRequest, ProjectResponse, QueryProjectsResponse
 
 def query(db: Session, name: str = None, current: int = 1, size: int = 10) -> QueryProjectsResponse:
     if (name):
@@ -11,17 +12,16 @@ def query(db: Session, name: str = None, current: int = 1, size: int = 10) -> Qu
     
     projects = db.query(Project).order_by(Project.created_at).limit(size).offset((current - 1) * size)
     
-    response: QueryProjectsResponse = QueryProjectsResponse(
+    return QueryProjectsResponse(
         total = projects.count(), 
-        projects = [QueryProjectResponse(id = p.id, name = p.name, created_at = p.created_at) for p in projects]
+        projects = [ProjectResponse(id = p.id, name = p.name, created_at = p.created_at) for p in projects]
     )
 
-    return response
-
-def create(db: Session, project: Project) -> None:
+def create(db: Session, request: CreateProjectRequest) -> ProjectResponse:
+    project = Project(id=str(uuid.uuid4()), name=request.name) 
     db.add(project)
     db.commit()
-    db.refresh(project)
+    return ProjectResponse(id=project.id, name=project.name, created_at=project.created_at)
 
 def get(db: Session, project_id: str) -> Project:
     project = db.query(Project).filter(Project.id == project_id).first()
@@ -34,10 +34,9 @@ def update(db: Session, project_id: str, name: str) -> None:
     db.add(project)
     db.commit()
     db.refresh(project)
-
+    return ProjectResponse(id=project.id, name=project.name, created_at=project.created_at)
 
 def delete(db: Session, project_id: str) -> None:
     project = get(db, project_id)
     db.delete(project)
     db.commit()
-
