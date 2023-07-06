@@ -1,3 +1,4 @@
+import uuid
 from fastapi import HTTPException
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
@@ -48,6 +49,7 @@ def update(db: Session, scenario_id: str, request: UpdateScenarioRequest):
 
 def create(db: Session, request: CreateScenarioRequest): 
     scenario = Scenario(
+        id = uuid.uuid4(), 
         project_id = request.project_id,
         name = request.name,
         description = request.description

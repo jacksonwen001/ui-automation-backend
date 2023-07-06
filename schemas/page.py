@@ -10,7 +10,7 @@ class CreatePageRequest(BaseModel):
 class UpdatePageRequest(BaseModel):
     name: str
 
-class QueryPageResponse(BaseModel): 
+class PageResponse(BaseModel): 
     id: str
     project_id: str
     name: str
@@ -18,7 +18,16 @@ class QueryPageResponse(BaseModel):
 
 class QueryPagesResponse(BaseModel): 
     total: int
-    pages: List[QueryPageResponse]
+    pages: List[PageResponse]
+
+class PageUsageResponse(BaseModel):
+    scenario_id: str
+    scenario_page_id: str
+    name: str
+
+class QueryPageUsagesResponse(BaseModel):
+    used: bool
+    scenarios: List[PageUsageResponse]
 
 class QueryPageRequest:
     def __init__(self, project_id: str, name: str|None = None, current: int = 1, size: int = 10) -> None:

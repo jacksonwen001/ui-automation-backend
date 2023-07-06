@@ -7,13 +7,15 @@ from sqlalchemy.orm import Session
 from schemas.project import CreateProjectRequest, ProjectResponse, QueryProjectsResponse
 
 def query(db: Session, name: str = None, current: int = 1, size: int = 10) -> QueryProjectsResponse:
+    projectQuery = db.query(Project)
     if (name):
-        return db.query(Project).filter(Project.name.contains(name)).order_by(Project.created_at).limit(size).offset((current - 1) * size)
-    
-    projects = db.query(Project).order_by(Project.created_at).limit(size).offset((current - 1) * size)
+        projectQuery = projectQuery.filter(Project.name.contains(name))
+
+    count = projectQuery.count()
+    projects = projectQuery.order_by(Project.created_at).limit(size).offset((current - 1) * size)
     
     return QueryProjectsResponse(
-        total = projects.count(), 
+        total = count, 
         projects = [ProjectResponse(id = p.id, name = p.name, created_at = p.created_at) for p in projects]
     )
 

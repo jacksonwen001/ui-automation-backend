@@ -1,3 +1,4 @@
+import uuid
 from fastapi import HTTPException
 from sqlalchemy import asc
 from sqlalchemy.orm import Session
@@ -48,6 +49,7 @@ def updateOrder(db: Session, request: UpdateScenarioPageOrderRequest):
     
 def create(db: Session, request: CreateScenarioPageRequest): 
     page = ScenarioPage(
+        id = uuid.uuid4(), 
         project_id = request.project_id, 
         scenario_id = request.scenario_id, 
         page_id = request.page_id, 

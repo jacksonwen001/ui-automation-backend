@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from schemas.page import CreatePageRequest, QueryPageRequest, QueryPageResponse, QueryPagesResponse, UpdatePageRequest
+from schemas.page import CreatePageRequest, QueryPageRequest, PageResponse, QueryPageUsagesResponse, QueryPagesResponse, UpdatePageRequest
 from service import page_service
 from routers import get_db
 
@@ -24,3 +24,7 @@ async def create(*, request: CreatePageRequest, db: Session = Depends(get_db)):
 @router.delete('/{page_id}')
 async def delete(page_id: str, db: Session = Depends(get_db)): 
     page_service.delete(db=db, page_id=page_id)
+
+@router.get('/{page_id}/usages')
+async def get(page_id: str, db: Session = Depends(get_db)) -> QueryPageUsagesResponse:
+    return page_service.query_page_usages(db, page_id)

@@ -1,3 +1,4 @@
+import uuid
 from fastapi import HTTPException
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
@@ -43,7 +44,7 @@ def update(db: Session, page_element_id: str, request: UpdateElementRequest):
     db.refresh()
 
 def create(db: Session, requst: CreateElementRequest): 
-    element = PageElement(name = requst.name, selector = requst.selector, target = requst.target)
+    element = PageElement(id = uuid.uuid4(), name = requst.name, selector = requst.selector, target = requst.target)
     db.add(element)
     db.commit()
 

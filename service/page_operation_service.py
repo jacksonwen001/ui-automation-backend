@@ -1,3 +1,4 @@
+import uuid
 from fastapi import HTTPException
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
@@ -45,7 +46,7 @@ def update(db: Session, page_operation_id: str, reqeust: UpdatePageOperationRequ
     db.refresh()
 
 def create(db: Session, request: CreatePageOperationRequest): 
-    operation = PageOperation(project_id = request.project_id, page_id = request.page_id, name = request.name)
+    operation = PageOperation(id=uuid.uuid4(), project_id = request.project_id, page_id = request.page_id, name = request.name)
     db.add(operation)
     db.commit()
     db.refresh(operation)
